@@ -9,7 +9,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimaryDark">
+        android:background="@color/colorPrimary">
 
         <TextView
             android:layout_width="wrap_content"
@@ -37,18 +37,18 @@
         android:padding="5dp">
 
         <TextView
-            android:id="@+id/txtTenQuanAn"
+            android:id="@+id/txtTenDL"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Gogi house"
+            android:text="Tên Danh Lam"
             android:textSize="15sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txtDiaChiQuanAn"
+            android:id="@+id/txtDiaChiDanhLam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="323 Tran Hung Dao " />
+            android:text="Địa Chỉ Danh Lam" />
 
     </LinearLayout>
 
@@ -72,13 +72,6 @@
         android:gravity="top"
         android:textSize="12sp"
         android:layout_weight="1"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerChonHinhBinhLuan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </android.support.v7.widget.RecyclerView>
     
     <LinearLayout
         android:layout_width="match_parent"

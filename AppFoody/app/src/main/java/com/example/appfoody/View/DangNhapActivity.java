@@ -197,8 +197,9 @@ public class DangNhapActivity extends AppCompatActivity implements GoogleApiClie
             editor.putString("mauser",user.getUid());
             editor.commit();*/
 
-            Intent iTrangChu = new Intent(this, TrangChuActivity.class);
-            startActivity(iTrangChu);
+            Intent iChiTietDanhLam = new Intent(this, ChiTietDanhLamActivity.class);
+            startActivity(iChiTietDanhLam);
         }
+
     }
 }

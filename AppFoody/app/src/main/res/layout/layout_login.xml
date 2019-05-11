@@ -26,7 +26,7 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
-            app:srcCompat="@drawable/foodytext" />
+            />
 
         <EditText
             android:id="@+id/edEmail"

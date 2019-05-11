@@ -1,17 +1,25 @@
 package com.example.appfoody.View;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.appfoody.Adapters.AdapterRecyclerHinhAnh;
+import com.example.appfoody.Adapters.AdapterRecyclerOdau;
 import com.example.appfoody.Model.DanhLamThangCanhModel;
 import com.example.appfoody.R;
+import com.facebook.AccessToken;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,15 +28,24 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChiTietDanhLamActivity extends AppCompatActivity implements OnMapReadyCallback {
-    TextView txtTenDanhLamThangCanh,txtDiaChiDanhLamThangCanh;
+    TextView txtTenDanhLamThangCanh,txtDiaChiDanhLamThangCanh,txtDanhGia,txtDanhDau,txtTieuDeToolbar,txtGioiThieu;
     DanhLamThangCanhModel danhLamThangCanhModel;
     ImageView imgHinhAnhDanhLam;
     MapFragment mapFragment;
     GoogleMap googleMap;
+    RecyclerView recyclerViewAnhDep;
+    AdapterRecyclerHinhAnh adapterRecyclerHinhAnh;
+    FirebaseUser user;
+    FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,20 +56,31 @@ public class ChiTietDanhLamActivity extends AppCompatActivity implements OnMapRe
 
         AddControl();
         HienThiChiTietDanhLam();
+        HienThiHinhAnhDep();
+        AddEvents();
+
     }
     public  void AddControl(){
+        txtGioiThieu=findViewById(R.id.txtGioiThieu);
+        txtTieuDeToolbar=findViewById(R.id.txtTieuDeToolbar);
+        txtDanhGia=findViewById(R.id.txtDanhGia);
+        txtDanhDau=findViewById(R.id.txtDanhDau);
         txtDiaChiDanhLamThangCanh=findViewById(R.id.txtDiaChiDanhLamThangCanh);
         txtTenDanhLamThangCanh=findViewById(R.id.txtTenDanhLamThangCanh);
         imgHinhAnhDanhLam=findViewById(R.id.imgHinhAnhDanhLam);
+        recyclerViewAnhDep=findViewById(R.id.recyclerHinhAnhDep);
         mapFragment=(MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
     }
     public void HienThiChiTietDanhLam()
     {
+        txtGioiThieu.setText(danhLamThangCanhModel.getGioithieu());
         txtTenDanhLamThangCanh.setText(danhLamThangCanhModel.getTendanhlam());
         txtDiaChiDanhLamThangCanh.setText(danhLamThangCanhModel.getDiachi());
+        txtTieuDeToolbar.setText(danhLamThangCanhModel.getTendanhlam());
         StorageReference storageHinhAnh = FirebaseStorage.getInstance().getReference().child("hinhdanhlam").child(danhLamThangCanhModel.getHinhanhdanhlam().get(0));
         long ONE_MEGABYTE = 5 * 1024 * 1024;
         storageHinhAnh.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -80,4 +108,36 @@ public class ChiTietDanhLamActivity extends AppCompatActivity implements OnMapRe
         googleMap.moveCamera(cameraUpdate);
 
     }
+    public void HienThiHinhAnhDep()
+    {
+        List<String> listHinh=new ArrayList<>();
+        listHinh=danhLamThangCanhModel.getHinhanhdanhlam();
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerViewAnhDep.setLayoutManager(layoutManager);
+        adapterRecyclerHinhAnh = new AdapterRecyclerHinhAnh(this, R.layout.custom_layout_hinhanhdep,listHinh);
+        recyclerViewAnhDep.setAdapter(adapterRecyclerHinhAnh);
+    }
+    public void AddEvents(){
+        txtDanhGia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                AccessToken accessToken =AccessToken.getCurrentAccessToken();
+                user =FirebaseAuth.getInstance().getCurrentUser();
+                if(user==null)
+                {
+                    Intent iBinhLuan=new Intent(ChiTietDanhLamActivity.this,BinhLuanActivity.class);
+                    iBinhLuan.putExtra("maDanhLam",danhLamThangCanhModel.getMadanhlam());
+                    iBinhLuan.putExtra("tenDanhLam",danhLamThangCanhModel.getTendanhlam());
+                    iBinhLuan.putExtra("diaChi",danhLamThangCanhModel.getDiachi());
+                    startActivity(iBinhLuan);
+                }else {
+                    Toast.makeText(ChiTietDanhLamActivity.this,"Bạn Cần Đăng Nhập",Toast.LENGTH_SHORT).show();
+                    Intent iDangNhap=new Intent(ChiTietDanhLamActivity.this,DangNhapActivity.class);
+                    startActivity(iDangNhap);
+
+                }
+            }
+        });
+    }
+
 }

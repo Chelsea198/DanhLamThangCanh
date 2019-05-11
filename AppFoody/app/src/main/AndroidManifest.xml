@@ -43,10 +43,6 @@
         </activity>
 
         <activity android:name=".View.SplashScreenActivity">
-
-        </activity>
-
-        <activity android:name=".View.DangNhapActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -54,11 +50,18 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".View.DangNhapActivity">
+
+        </activity>
+
         <activity android:name=".View.TrangChuActivity">
 
         </activity>
 
         <activity android:name=".View.ChiTietDanhLamActivity">
+
+        </activity>
+        <activity android:name=".View.BinhLuanActivity">
 
         </activity>
     </application>

@@ -15,7 +15,7 @@
         android:textStyle="bold"
         />
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerThucDon"
+        android:id="@+id/recyclerHinhAnhDep"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
