@@ -1,9 +1,9 @@
 package com.example.appfoody.View;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,10 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.appfoody.Adapters.AdapterRecyclerHinhAnh;
-import com.example.appfoody.Adapters.AdapterRecyclerOdau;
 import com.example.appfoody.Model.DanhLamThangCanhModel;
 import com.example.appfoody.R;
-import com.facebook.AccessToken;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,14 +43,17 @@ public class ChiTietDanhLamActivity extends AppCompatActivity implements OnMapRe
     RecyclerView recyclerViewAnhDep;
     AdapterRecyclerHinhAnh adapterRecyclerHinhAnh;
     FirebaseUser user;
-    FirebaseAuth firebaseAuth;
+    ArrayList<Bitmap> bitmapList= new ArrayList<>();
+    ArrayList<String> listHinh=new ArrayList<>();
+    Context mContext;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_chitietdanhlam);
 
         danhLamThangCanhModel=getIntent().getParcelableExtra("danhlamthangcanh");
-
+        mContext=this;
 
         AddControl();
         HienThiChiTietDanhLam();
@@ -87,6 +88,7 @@ public class ChiTietDanhLamActivity extends AppCompatActivity implements OnMapRe
             @Override
             public void onSuccess(byte[] bytes) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                imgHinhAnhDanhLam.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imgHinhAnhDanhLam.setImageBitmap(bitmap);
             }
         });
@@ -110,12 +112,28 @@ public class ChiTietDanhLamActivity extends AppCompatActivity implements OnMapRe
     }
     public void HienThiHinhAnhDep()
     {
-        List<String> listHinh=new ArrayList<>();
+        recyclerViewAnhDep.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
         listHinh=danhLamThangCanhModel.getHinhanhdanhlam();
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerViewAnhDep.setLayoutManager(layoutManager);
-        adapterRecyclerHinhAnh = new AdapterRecyclerHinhAnh(this, R.layout.custom_layout_hinhanhdep,listHinh);
-        recyclerViewAnhDep.setAdapter(adapterRecyclerHinhAnh);
+
+        for (String imageChild:listHinh) {
+
+            StorageReference storageHinhAnh = FirebaseStorage.getInstance().getReference().child("hinhdanhlam").child(imageChild);
+            long ONE_MEGABYTE = 5 * 1024 * 1024;
+            storageHinhAnh.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    bitmapList.add(bitmap);
+                    if(bitmapList.size()==listHinh.size())
+                    {
+                        recyclerViewAnhDep.setAdapter(new AdapterRecyclerHinhAnh(mContext,R.layout.custom_layout_hinhanhdep, listHinh,bitmapList));
+
+                    }
+
+                }
+            });
+        }
+
     }
     public void AddEvents(){
         txtDanhGia.setOnClickListener(new View.OnClickListener() {

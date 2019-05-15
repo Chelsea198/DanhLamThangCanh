@@ -10,6 +10,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -18,7 +19,16 @@ import java.util.List;
 public class DanhLamThangCanhModel implements  Parcelable{
     String tendanhlam,madanhlam,diachi,gioithieu;
     double longtitude,latitude;
-    List<String> hinhanhdanhlam;
+    ArrayList<String> hinhanhdanhlam;
+
+    public DanhLamThangCanhModel(String tendanhlam, String madanhlam, String diachi, String gioithieu, double longtitude, double latitude) {
+        this.tendanhlam = tendanhlam;
+        this.madanhlam = madanhlam;
+        this.diachi = diachi;
+        this.gioithieu = gioithieu;
+        this.longtitude = longtitude;
+        this.latitude = latitude;
+    }
 
     protected DanhLamThangCanhModel(Parcel in) {
         tendanhlam = in.readString();
@@ -97,11 +107,11 @@ public class DanhLamThangCanhModel implements  Parcelable{
         this.tendanhlam = tendanhlam;
     }
 
-    public List<String> getHinhanhdanhlam() {
+    public ArrayList<String> getHinhanhdanhlam() {
         return hinhanhdanhlam;
     }
 
-    public void setHinhanhdanhlam(List<String> hinhanhdanhlam) {
+    public void setHinhanhdanhlam(ArrayList<String> hinhanhdanhlam) {
         this.hinhanhdanhlam = hinhanhdanhlam;
     }
     public void getDanhSachDanhLamThangCanh(final DanhLamInterface danhLamInterface) {
@@ -111,16 +121,15 @@ public class DanhLamThangCanhModel implements  Parcelable{
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //Lấy danh sách danh lam thắng cảnh
                 DataSnapshot dataSnapshotDanhLam = dataSnapshot.child("danhlamthangcanhs");
-                for (DataSnapshot valueDanhLam : dataSnapshotDanhLam.getChildren()
-                     ) {
+                for (DataSnapshot valueDanhLam : dataSnapshotDanhLam.getChildren())
+                {
                     DanhLamThangCanhModel danhLamThangCanhModel = valueDanhLam.getValue(DanhLamThangCanhModel.class);
-
                     danhLamThangCanhModel.setMadanhlam(valueDanhLam.getKey());
                     //Lấy danh sách hình ảnh danh lam  theo mã
                     DataSnapshot dataSnapshotHinhDanhLam = dataSnapshot.child("hinhanhdanhlams").child(danhLamThangCanhModel.getMadanhlam());
-                    List<String> hinhAnhList = new ArrayList<>();
+                    ArrayList<String> hinhAnhList = new ArrayList<>();
                     for (DataSnapshot valueHinhDanhLam : dataSnapshotHinhDanhLam.getChildren()
-                         ) {
+                    ) {
                         hinhAnhList.add(valueHinhDanhLam.getValue(String.class));
                     }
                     danhLamThangCanhModel.setHinhanhdanhlam(hinhAnhList);
@@ -133,10 +142,42 @@ public class DanhLamThangCanhModel implements  Parcelable{
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         };
-
         nodeRoot.addListenerForSingleValueEvent(valueEventListener);
     }
+    public void getDanhSachDanhLamThangCanhwithQuery(final DanhLamInterface danhLamInterface, final String query) {
 
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //Lấy danh sách danh lam thắng cảnh
+                DataSnapshot dataSnapshotDanhLam = dataSnapshot.child("danhlamthangcanhs");
+                for (DataSnapshot valueDanhLam : dataSnapshotDanhLam.getChildren())
+                {
+                    DanhLamThangCanhModel danhLamThangCanhModel = valueDanhLam.getValue(DanhLamThangCanhModel.class);
+                    if(danhLamThangCanhModel.getTendanhlam().contains(query))
+                    {
+                        danhLamThangCanhModel.setMadanhlam(valueDanhLam.getKey());
+                        //Lấy danh sách hình ảnh danh lam  theo mã
+                        DataSnapshot dataSnapshotHinhDanhLam = dataSnapshot.child("hinhanhdanhlams").child(danhLamThangCanhModel.getMadanhlam());
+                        ArrayList<String> hinhAnhList = new ArrayList<>();
+                        for (DataSnapshot valueHinhDanhLam : dataSnapshotHinhDanhLam.getChildren()
+                        ) {
+                            hinhAnhList.add(valueHinhDanhLam.getValue(String.class));
+                        }
+                        danhLamThangCanhModel.setHinhanhdanhlam(hinhAnhList);
+
+                        danhLamInterface.getDanhSachDanhLamThangCanh(danhLamThangCanhModel);
+                    }
+                    else continue;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+        nodeRoot.addListenerForSingleValueEvent(valueEventListener);
+    }
     @Override
     public int describeContents() {
         return 0;

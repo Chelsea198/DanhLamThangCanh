@@ -39,6 +39,9 @@ import java.util.List;
 public class DangNhapActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, FirebaseAuth.AuthStateListener{
     public static int KIEMTRA_PROVIDER_DANGNHAP=0;
     public static int REQUESTCODE_DANGNHAP_GOOGLE = 9;
+    public static int RESULT_LOGIN_SUCCESS=10;
+    public static int RESULT_LOGIN_FALDED=11;
+
     GoogleSignInClient mGoogleSignInClient;
     FirebaseAuth firebaseAuth;
     CallbackManager callbackManager;
@@ -107,7 +110,8 @@ public class DangNhapActivity extends AppCompatActivity implements GoogleApiClie
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(!task.isSuccessful()){
-                    Toast.makeText(DangNhapActivity.this,getString(R.string.thongbaodangnhapthatbai),Toast.LENGTH_SHORT).show();
+                    Log.d("appcheck","dang nhap thanh cong");
+                    Toast.makeText(getApplicationContext(),getString(R.string.thongbaodangnhapthatbai),Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -133,6 +137,7 @@ public class DangNhapActivity extends AppCompatActivity implements GoogleApiClie
         loginManager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                Log.d("appcheck", "login fb success");
                 KIEMTRA_PROVIDER_DANGNHAP=2;
                 String tokenID=loginResult.getAccessToken().getToken();
                 chungThucDangNhapFireBase(tokenID);
@@ -193,12 +198,12 @@ public class DangNhapActivity extends AppCompatActivity implements GoogleApiClie
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user != null){
-            /*SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("mauser",user.getUid());
-            editor.commit();*/
 
-            Intent iChiTietDanhLam = new Intent(this, ChiTietDanhLamActivity.class);
-            startActivity(iChiTietDanhLam);
+            Log.d("appcheck","login success");
+            Intent returnIntent = new Intent();
+            setResult(RESULT_LOGIN_SUCCESS,returnIntent);
+            finish();
+
         }
 
     }
