@@ -196,9 +196,12 @@
                                 android:textSize="18sp"/>
                         </LinearLayout>
                         <include layout="@layout/layout_anhdep"/>
-                        <include layout="@layout/layout_binhluan_chitietquanan">
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerViewBinhLuanDanhlam"
+                            android:layout_width="match_parent"
+                            android:layout_height="300dp">
 
-                        </include>
+                        </android.support.v7.widget.RecyclerView>
                     </LinearLayout>
                 </android.support.v4.widget.NestedScrollView>
 

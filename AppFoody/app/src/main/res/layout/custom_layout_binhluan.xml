@@ -10,13 +10,7 @@
         android:orientation="horizontal"
         android:padding="5dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/circleImgUser"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:gravity="center"
-            android:src="@drawable/hinhtest"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,7 +20,7 @@
             android:layout_weight="1">
 
             <TextView
-                android:id="@+id/txtTieuDeBinhLuan"
+                android:id="@+id/txtUserNamBinhLuan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Gogi House"
@@ -46,8 +40,7 @@
             android:layout_height="match_parent"
             android:text="6.0"/>
     </LinearLayout>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycleHinhBinhLuan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+
+
 </LinearLayout>

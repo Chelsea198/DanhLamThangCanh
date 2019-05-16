@@ -1,5 +1,6 @@
 package com.example.appfoody.View;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,7 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.appfoody.Adapters.AdapterBinhLuan;
 import com.example.appfoody.Adapters.AdapterRecyclerHinhAnh;
+import com.example.appfoody.Control.BinhLuanController;
+import com.example.appfoody.Control.Interfaces.BinhLuanInterface;
+import com.example.appfoody.Model.BinhLuanCon;
 import com.example.appfoody.Model.DanhLamThangCanhModel;
 import com.example.appfoody.R;
 import com.google.android.gms.maps.CameraUpdate;
@@ -35,17 +40,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChiTietDanhLamActivity extends AppCompatActivity implements OnMapReadyCallback {
+    static int BINHLUAN_CODE_RESULT=1998;
     TextView txtTenDanhLamThangCanh,txtDiaChiDanhLamThangCanh,txtDanhGia,txtDanhDau,txtTieuDeToolbar,txtGioiThieu;
     DanhLamThangCanhModel danhLamThangCanhModel;
     ImageView imgHinhAnhDanhLam;
     MapFragment mapFragment;
     GoogleMap googleMap;
-    RecyclerView recyclerViewAnhDep;
+    RecyclerView recyclerViewAnhDep,recyclerViewBinhLuan;
     AdapterRecyclerHinhAnh adapterRecyclerHinhAnh;
     FirebaseUser user;
     ArrayList<Bitmap> bitmapList= new ArrayList<>();
     ArrayList<String> listHinh=new ArrayList<>();
     Context mContext;
+    BinhLuanController binhLuanController;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,8 +65,11 @@ public class ChiTietDanhLamActivity extends AppCompatActivity implements OnMapRe
         AddControl();
         HienThiChiTietDanhLam();
         HienThiHinhAnhDep();
-        AddEvents();
 
+        AddEvents();
+        recyclerViewBinhLuan.setLayoutManager(new LinearLayoutManager(this));
+        binhLuanController= new BinhLuanController(recyclerViewBinhLuan,this,danhLamThangCanhModel.getMadanhlam(),R.layout.custom_layout_binhluan);
+        binhLuanController.GetDanhSachBinhLuan();
     }
     public  void AddControl(){
         txtGioiThieu=findViewById(R.id.txtGioiThieu);
@@ -74,7 +84,7 @@ public class ChiTietDanhLamActivity extends AppCompatActivity implements OnMapRe
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
+        recyclerViewBinhLuan= findViewById(R.id.recyclerViewBinhLuanDanhlam);
     }
     public void HienThiChiTietDanhLam()
     {
@@ -145,17 +155,34 @@ public class ChiTietDanhLamActivity extends AppCompatActivity implements OnMapRe
                 {
                     Intent iBinhLuan=new Intent(ChiTietDanhLamActivity.this,BinhLuanActivity.class);
                     iBinhLuan.putExtra("maDanhLam",danhLamThangCanhModel.getMadanhlam());
-                    iBinhLuan.putExtra("tenDanhLam",danhLamThangCanhModel.getTendanhlam());
-                    iBinhLuan.putExtra("diaChi",danhLamThangCanhModel.getDiachi());
+
                     startActivity(iBinhLuan);
                 }else {
                     Toast.makeText(ChiTietDanhLamActivity.this,"Bạn Cần Đăng Nhập",Toast.LENGTH_SHORT).show();
                     Intent iDangNhap=new Intent(ChiTietDanhLamActivity.this,DangNhapActivity.class);
-                    startActivity(iDangNhap);
+                    startActivityForResult(iDangNhap,BINHLUAN_CODE_RESULT);
 
                 }
             }
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==BINHLUAN_CODE_RESULT)
+        {
+            if(resultCode== Activity.RESULT_OK)
+            {
+                String result=data.getStringExtra("result");
+                Toast.makeText(getApplicationContext(),result,Toast.LENGTH_LONG);
+                F5BinhLuan();
+
+            }
+        }
+    }
+    void F5BinhLuan()
+    {
+        binhLuanController.RefreshBinhLuan();
+    }
 }

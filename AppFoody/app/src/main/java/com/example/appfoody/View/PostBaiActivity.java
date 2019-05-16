@@ -4,8 +4,8 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.api.Places;
 
 import android.app.Activity;
 import android.content.Context;
@@ -46,10 +46,11 @@ public class PostBaiActivity extends AppCompatActivity {
         postBaiController=new PostBaiController(this,this);
 
         // Initialize Places.
-        Places.initialize(getApplicationContext(), "AIzaSyA_yXGk2lddVkWbHCXtMyqv3VGjoqAkT2Y");
+        Places.initialize(this, "AIzaSyA_yXGk2lddVkWbHCXtMyqv3VGjoqAkT2Y");
 
         // Create a new Places client instance.
         PlacesClient placesClient = Places.createClient(this);
+
 
         mActivity=this;
         mContext=this;
@@ -84,8 +85,6 @@ public class PostBaiActivity extends AppCompatActivity {
                 } catch (GooglePlayServicesNotAvailableException e) {
                     e.printStackTrace();
                 }
-
-
             }
          });
         btnChonAnh.setOnClickListener(new View.OnClickListener() {

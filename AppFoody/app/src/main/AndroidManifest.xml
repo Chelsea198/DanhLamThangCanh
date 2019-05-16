@@ -51,7 +51,7 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.PostBaiActivity">
+        <activity android:name=".View.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -59,7 +59,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.SplashScreenActivity"></activity>
+        <activity android:name=".View.PostBaiActivity"></activity>
         <activity android:name=".View.DangNhapActivity" />
         <activity android:name=".View.TrangChuActivity" />
         <activity android:name=".View.ChiTietDanhLamActivity" />

@@ -18,7 +18,29 @@ import java.util.List;
 
 public class DanhLamThangCanhModel implements  Parcelable{
     String tendanhlam,madanhlam,diachi,gioithieu;
-    double longtitude,latitude;
+    double longtitude;
+    double latitude;
+    double avgMark;
+
+    public double getAvgMark() {
+        return avgMark;
+    }
+
+    public DanhLamThangCanhModel setAvgMark(double avgMark) {
+        this.avgMark = avgMark;
+        return this;
+    }
+
+    public double getCountCmt() {
+        return countCmt;
+    }
+
+    public DanhLamThangCanhModel setCountCmt(double countCmt) {
+        this.countCmt = countCmt;
+        return this;
+    }
+
+    double countCmt;
     ArrayList<String> hinhanhdanhlam;
 
     public DanhLamThangCanhModel(String tendanhlam, String madanhlam, String diachi, String gioithieu, double longtitude, double latitude) {
